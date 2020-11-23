@@ -69,11 +69,15 @@ const EditModal = (props) => {
                 </div>
                 <div className='mb-1'>
                     <strong>Task Status:</strong>
-                                        <input
+                    <select
                         onChange={(e) => inputChangedHandler(e)}
                         name='task_status'
                         type='text'
-                        value={task.task_status}/>
+                        value={task.task_status}>
+                        {Object.keys(statuses).map(key => {
+                            return (<option key={key} value={key}>{statuses[key]}</option>)
+                        })}
+                    </select>
                 </div>
                 <div className='mb-1'>
                     <strong>Task Date:</strong>
