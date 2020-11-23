@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiFillFolderOpen, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import Loader from "../../UI/Loader/Loader";
 import ViewModal from "../../UI/Modal/ViewModal/ViewModal";
+import Moment from 'moment';
 import './TasksList.css'
 
 const TasksList = (props) => {
@@ -42,7 +43,8 @@ const TasksList = (props) => {
     const loadViewModal = (props) => {
         let task = {
             ...props,
-            task_status: statuses[props.task_status]
+            task_status: statuses[props.task_status],
+            task_datetime: Moment(props.task_datetime).format('DD-MM-YYYY hh:mm a')
         };
         setViewModal(task);
     };
@@ -89,7 +91,7 @@ const TasksList = (props) => {
                             <td>{tasks[task].customer_phone}</td>
                             <td>{tasks[task].customer_email}</td>
                             <td>{statuses[tasks[task].task_status]}</td>
-                            <td>{tasks[task].task_datetime}</td>
+                            <td>{Moment(tasks[task].task_datetime).format('DD-MM-YYYY hh:mm a')}</td>
                             <td><button onClick={() => loadViewModal(tasks[task])} className='btn btn-open'><AiFillFolderOpen /></button></td>
                             <td><button className='btn btn-edit'><AiFillEdit /></button></td>
                             <td><button onClick={() => deleteTask(task)} className='btn btn-delete'><AiFillDelete /></button></td>
@@ -100,7 +102,7 @@ const TasksList = (props) => {
             </tbody>
         </table>
     }
-
+    Moment.locale('en');
     return (
         <div>
             { body }
