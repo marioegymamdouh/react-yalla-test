@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AiFillFolderOpen, AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import Loader from "../../UI/Loader/Loader";
+import './TasksList.css'
 
 const TasksList = (props) => {
 
@@ -17,18 +19,21 @@ const TasksList = (props) => {
         9: 'Cancel',
         10: 'Deleted',
     });
+    const [loader, setLoader] = useState(true);
 
     // Lifecycle hooks
     useEffect(() => {
         (async () => {
+            setLoader(true);
             const response = await fetch('/tasks.json');
             const jsonResponse = await response.json();
-            setTasks(jsonResponse)
+            setTasks(jsonResponse);
+            setLoader(false)
         })()
     }, []);
 
     // Render variables
-    let body = <div>nothing to show</div>;
+    let body = null;
     if (Object.keys(tasks).length>0){
         body = <table>
             <thead>
@@ -69,6 +74,7 @@ const TasksList = (props) => {
     return (
         <div>
             {body}
+            { loader? <Loader/> : ''}
         </div>
     )
 };
