@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AiFillFolderOpen, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import Loader from "../../UI/Loader/Loader";
 import ViewModal from "../../UI/Modal/ViewModal/ViewModal";
+import EditModal from "../../UI/Modal/EditModal/EditModal";
 import Moment from 'moment';
 import './TasksList.css'
 
@@ -24,6 +25,7 @@ const TasksList = (props) => {
     });
     const [loader, setLoader] = useState(true);
     const [viewModal, setViewModal] = useState(null);
+    const [editModal, setEditModal] = useState(null);
 
     // Lifecycle hooks
     useEffect(() => {
@@ -51,6 +53,12 @@ const TasksList = (props) => {
     const closeViewModal = () => {
         setViewModal(null);
     };
+    const loadEditModal = (props) => {
+        setEditModal(props);
+    };
+    const closeEditModal = () => {
+        setEditModal(null);
+    };
     const deleteTask = async (key) => {
         try {
             setLoader(true);
@@ -59,6 +67,20 @@ const TasksList = (props) => {
             });
             await loadTasks(false);
             setLoader(false)
+        } catch (e) {
+            console.log(e)
+        }
+    };
+    const updateTask = async (value) => {
+        try {
+            setLoader(true);
+            await fetch('/tasks/'+editModal+'/.json', {
+                method: 'PATCH',
+                body: JSON.stringify(value)
+            });
+            await loadTasks(false);
+            setLoader(false);
+            setEditModal(null)
         } catch (e) {
             console.log(e)
         }
@@ -93,7 +115,7 @@ const TasksList = (props) => {
                             <td>{statuses[tasks[task].task_status]}</td>
                             <td>{Moment(tasks[task].task_datetime).format('DD-MM-YYYY hh:mm a')}</td>
                             <td><button onClick={() => loadViewModal(tasks[task])} className='btn btn-open'><AiFillFolderOpen /></button></td>
-                            <td><button className='btn btn-edit'><AiFillEdit /></button></td>
+                            <td><button onClick={() => loadEditModal(task)} className='btn btn-edit'><AiFillEdit /></button></td>
                             <td><button onClick={() => deleteTask(task)} className='btn btn-delete'><AiFillDelete /></button></td>
                         </tr>
                     )
@@ -108,6 +130,7 @@ const TasksList = (props) => {
             { body }
             { loader? <Loader/> : '' }
             { viewModal? <ViewModal closeHandler={closeViewModal} task={viewModal}/> : '' }
+            { editModal? <EditModal updateTask={(v) => updateTask(v)} closeHandler={closeEditModal} key={editModal} task={tasks[editModal]}/> : '' }
         </div>
     )
 };
