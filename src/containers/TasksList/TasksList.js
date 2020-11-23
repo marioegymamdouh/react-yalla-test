@@ -26,10 +26,12 @@ const TasksList = (props) => {
     const [loader, setLoader] = useState(true);
     const [viewModal, setViewModal] = useState(null);
     const [editModal, setEditModal] = useState(null);
+    const [filter, setFilter] = useState({date: '', status: ''});
 
     // Lifecycle hooks
     useEffect(() => {
-        loadTasks()
+        loadTasks();
+        filterHandler()
     }, []);
 
     // Methods
@@ -85,6 +87,23 @@ const TasksList = (props) => {
             console.log(e)
         }
     };
+    const filterHandler = () => {
+        let result = Object.keys(tasks).map(key => {return {key: key, ...tasks[key]}});
+        if (filter.status !== ''){
+            result = result.filter((task) => {
+                let filterStatus = parseInt(filter.status);
+                return task.task_status === filterStatus
+            })
+        }
+        if (filter.date !== ''){
+            result = result.filter((task) => {
+                let filterDate = Moment(filter.date).format('DD-MM-YYYY');
+                let taskDate = Moment(task.task_datetime).format('DD-MM-YYYY');
+                return taskDate === filterDate
+            })
+        }
+        return result
+    };
 
     // Render variables
     let body = null;
@@ -105,18 +124,18 @@ const TasksList = (props) => {
             </thead>
             <tbody>
             {
-                Object.keys(tasks).map(task => {
+                filterHandler().map(task => {
                     return (
-                        <tr key={task}>
-                            <td>{tasks[task].task_id}</td>
-                            <td>{tasks[task].customer_name}</td>
-                            <td>{tasks[task].customer_phone}</td>
-                            <td>{tasks[task].customer_email}</td>
-                            <td>{statuses[tasks[task].task_status]}</td>
-                            <td>{Moment(tasks[task].task_datetime).format('DD-MM-YYYY hh:mm a')}</td>
-                            <td><button onClick={() => loadViewModal(tasks[task])} className='btn btn-open'><AiFillFolderOpen /></button></td>
-                            <td><button onClick={() => loadEditModal(task)} className='btn btn-edit'><AiFillEdit /></button></td>
-                            <td><button onClick={() => deleteTask(task)} className='btn btn-delete'><AiFillDelete /></button></td>
+                        <tr key={task.key}>
+                            <td>{task.task_id}</td>
+                            <td>{task.customer_name}</td>
+                            <td>{task.customer_phone}</td>
+                            <td>{task.customer_email}</td>
+                            <td>{statuses[task.task_status]}</td>
+                            <td>{Moment(task.task_datetime).format('DD-MM-YYYY hh:mm a')}</td>
+                            <td><button onClick={() => loadViewModal(task)} className='btn btn-open'><AiFillFolderOpen /></button></td>
+                            <td><button onClick={() => loadEditModal(task.key)} className='btn btn-edit'><AiFillEdit /></button></td>
+                            <td><button onClick={() => deleteTask(task.key)} className='btn btn-delete'><AiFillDelete /></button></td>
                         </tr>
                     )
                 })
@@ -127,6 +146,16 @@ const TasksList = (props) => {
     Moment.locale('en');
     return (
         <div>
+            <div className='filter-container'>
+                <select onChange={(e) => setFilter({...filter, status: e.target.value})} value={filter.status}>
+                    <option value=''>select status</option>
+                    {Object.keys(statuses).map(key => {
+                        return (<option key={key} value={key}>{statuses[key]}</option>)
+                    })}
+                </select>
+                <input type='date' onChange={(e) => setFilter({...filter, date: e.target.value})} value={filter.date}/>
+            </div>
+
             { body }
             { loader? <Loader/> : '' }
             { viewModal? <ViewModal closeHandler={closeViewModal} task={viewModal}/> : '' }
