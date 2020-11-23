@@ -49,6 +49,7 @@ table{
 }
 table td{
   padding: 5px 15px;
+  vertical-align: middle;
 }
 table thead{
   background-color: rgba(0,0,0,.7);
@@ -59,5 +60,28 @@ table thead td{
   padding: 10px 15px;
 }
 table tbody tr:nth-child(odd){
-  background-color: rgba(0,0,0,.1);
+  background-color: rgba(0,0,0,.03);
+}
+.btn{
+  background: unset;
+  border: 1px solid #000;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+  margin: auto;
+}
+.btn-open{
+  border-color: yellowgreen;
+  color: yellowgreen;
+}
+.btn-edit{
+  border-color: orangered;
+  color: orangered;
+}
+.btn-delete{
+  border-color: darkred;
+  color: darkred;
 }

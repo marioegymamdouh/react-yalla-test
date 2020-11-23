@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { AiFillFolderOpen, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 const TasksList = (props) => {
 
@@ -38,6 +39,9 @@ const TasksList = (props) => {
                 <td>Email</td>
                 <td>Task Status</td>
                 <td>Task Date</td>
+                <td>View</td>
+                <td>Edit</td>
+                <td>Delete</td>
             </tr>
             </thead>
             <tbody>
@@ -51,6 +55,9 @@ const TasksList = (props) => {
                             <td>{tasks[task].customer_email}</td>
                             <td>{statuses[tasks[task].task_status]}</td>
                             <td>{tasks[task].task_datetime}</td>
+                            <td><button className='btn btn-open'><AiFillFolderOpen /></button></td>
+                            <td><button className='btn btn-edit'><AiFillEdit /></button></td>
+                            <td><button className='btn btn-delete'><AiFillDelete /></button></td>
                         </tr>
                     )
                 })
