@@ -32,13 +32,12 @@ const TasksList = (props) => {
         body = <table>
             <thead>
             <tr>
-                <td>id</td>
-                <td>name</td>
-                <td>phone</td>
-                <td>email</td>
-                <td>status</td>
-                <td>date</td>
-                <td>barcode</td>
+                <td>Task ID</td>
+                <td>Customer Name</td>
+                <td>Customer Phone</td>
+                <td>Email</td>
+                <td>Task Status</td>
+                <td>Task Date</td>
             </tr>
             </thead>
             <tbody>
@@ -52,7 +51,6 @@ const TasksList = (props) => {
                             <td>{tasks[task].customer_email}</td>
                             <td>{statuses[tasks[task].task_status]}</td>
                             <td>{tasks[task].task_datetime}</td>
-                            <td>{tasks[task].barcode}</td>
                         </tr>
                     )
                 })
