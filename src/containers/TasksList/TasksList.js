@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AiFillFolderOpen, AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import Loader from "../../UI/Loader/Loader";
+import ViewModal from "../../UI/Modal/ViewModal/ViewModal";
 import './TasksList.css'
 
 const TasksList = (props) => {
@@ -13,6 +14,7 @@ const TasksList = (props) => {
         2: 'Successful',
         3: 'Failed',
         4: 'InProgress',
+        5: 'Pending',
         6: 'Unassigned',
         7: 'Accepted',
         8: 'Decline',
@@ -20,6 +22,7 @@ const TasksList = (props) => {
         10: 'Deleted',
     });
     const [loader, setLoader] = useState(true);
+    const [viewModal, setViewModal] = useState(null);
 
     // Lifecycle hooks
     useEffect(() => {
@@ -31,6 +34,18 @@ const TasksList = (props) => {
             setLoader(false)
         })()
     }, []);
+
+    // Methods
+    const loadViewModal = (props) => {
+        let task = {
+            ...props,
+            task_status: statuses[props.task_status]
+        };
+        setViewModal(task);
+    };
+    const closeViewModal = () => {
+        setViewModal(null);
+    };
 
     // Render variables
     let body = null;
@@ -60,7 +75,7 @@ const TasksList = (props) => {
                             <td>{tasks[task].customer_email}</td>
                             <td>{statuses[tasks[task].task_status]}</td>
                             <td>{tasks[task].task_datetime}</td>
-                            <td><button className='btn btn-open'><AiFillFolderOpen /></button></td>
+                            <td><button onClick={() => loadViewModal(tasks[task])} className='btn btn-open'><AiFillFolderOpen /></button></td>
                             <td><button className='btn btn-edit'><AiFillEdit /></button></td>
                             <td><button className='btn btn-delete'><AiFillDelete /></button></td>
                         </tr>
@@ -73,8 +88,9 @@ const TasksList = (props) => {
 
     return (
         <div>
-            {body}
-            { loader? <Loader/> : ''}
+            { body }
+            { loader? <Loader/> : '' }
+            { viewModal? <ViewModal closeHandler={closeViewModal} task={viewModal}/> : '' }
         </div>
     )
 };
