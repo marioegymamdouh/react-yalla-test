@@ -26,16 +26,19 @@ const TasksList = (props) => {
 
     // Lifecycle hooks
     useEffect(() => {
-        (async () => {
-            setLoader(true);
-            const response = await fetch('/tasks.json');
-            const jsonResponse = await response.json();
-            setTasks(jsonResponse);
-            setLoader(false)
-        })()
+        loadTasks()
     }, []);
 
     // Methods
+    const loadTasks = async (loaderController = true) => {
+        setLoader(true);
+        const response = await fetch('/tasks.json');
+        const jsonResponse = await response.json();
+        setTasks(jsonResponse);
+        if (loaderController){
+            setLoader(false)
+        }
+    };
     const loadViewModal = (props) => {
         let task = {
             ...props,
@@ -45,6 +48,18 @@ const TasksList = (props) => {
     };
     const closeViewModal = () => {
         setViewModal(null);
+    };
+    const deleteTask = async (key) => {
+        try {
+            setLoader(true);
+            await fetch('/tasks/'+key+'.json', {
+                method: 'DELETE'
+            });
+            await loadTasks(false);
+            setLoader(false)
+        } catch (e) {
+            console.log(e)
+        }
     };
 
     // Render variables
@@ -77,7 +92,7 @@ const TasksList = (props) => {
                             <td>{tasks[task].task_datetime}</td>
                             <td><button onClick={() => loadViewModal(tasks[task])} className='btn btn-open'><AiFillFolderOpen /></button></td>
                             <td><button className='btn btn-edit'><AiFillEdit /></button></td>
-                            <td><button className='btn btn-delete'><AiFillDelete /></button></td>
+                            <td><button onClick={() => deleteTask(task)} className='btn btn-delete'><AiFillDelete /></button></td>
                         </tr>
                     )
                 })
